@@ -1,0 +1,7 @@
+[
+  { "id": "grunt", "display_name": "Capanga", "type": "NORMAL", "hp_mult": 1.0, "dmg_mult": 1.0, "def_value": 0, "notes": "Inimigo comum padrao." },
+  { "id": "swarm_bat", "display_name": "Morcego (Enxame)", "type": "SWARM", "hp_mult": 0.25, "dmg_mult": 0.6, "def_value": 0, "notes": "Rapido, pouco HP, anda em grupos de 5. Exige dano em area/splash." },
+  { "id": "rock_brute", "display_name": "Bruto de Pedra", "type": "BRUISER", "hp_mult": 2.5, "dmg_mult": 1.2, "def_value": 200, "notes": "Lento, altissima defesa. Exige magia/perfurante." },
+  { "id": "shadow_diver", "display_name": "Assassino Sombrio", "type": "DIVER", "hp_mult": 0.8, "dmg_mult": 1.6, "def_value": 0, "notes": "Pula o slot 0 (frente) e ataca o slot ocupado mais ao fundo (retaguarda)." },
+  { "id": "back_healer", "display_name": "Curandeiro Inimigo", "type": "HEALER", "hp_mult": 0.9, "dmg_mult": 0.3, "def_value": 0, "notes": "Fica atras curando os Brutos. Exige atingir a retaguarda inimiga." }
+]

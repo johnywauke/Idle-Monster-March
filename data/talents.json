@@ -1,0 +1,12 @@
+[
+  { "id": "glass_cannon", "display_name": "Canhao de Vidro", "description": "+50% ATK, -30% HP Maximo.", "effects": { "atk_pct": 0.50, "hp_pct": -0.30 } },
+  { "id": "bloodthirst", "display_name": "Sede de Sangue", "description": "Cura 2% do HP Maximo por abate do time.", "effects": { "on_kill_heal_pct_maxhp": 0.02 } },
+  { "id": "stealth_echo", "display_name": "Eco Furtivo", "description": "15% de chance do ataque basico bater 2x.", "effects": { "double_hit_chance": 0.15 } },
+  { "id": "bounty_hunter", "display_name": "Cacador de Recompensas", "description": "Abates diretos deste monstro dropam +20% Ouro.", "effects": { "kill_gold_bonus_pct": 0.20 } },
+  { "id": "titan_skin", "display_name": "Pele de Tita", "description": "Converte 2% do HP Maximo em Dano de Ataque.", "effects": { "hp_to_atk_pct": 0.02 } },
+  { "id": "masters_affection", "display_name": "Simpatia do Mestre", "description": "Cliques no monstro dao 3x mais energia de Ultimate.", "effects": { "click_ult_energy_mult": 3.0 } },
+  { "id": "explosive_impact", "display_name": "Impacto Explosivo", "description": "+30% de dano adjacente ao alvo atingido.", "effects": { "adjacent_splash_pct": 0.30 } },
+  { "id": "paralyzing_touch", "display_name": "Toque Paralisante", "description": "5% de chance de Stun por 1s.", "effects": { "stun_chance": 0.05, "stun_seconds": 1.0 } },
+  { "id": "last_breath", "display_name": "Ultimo Suspiro", "description": "Ao morrer, explode causando dano e curando o time em 50%.", "effects": { "on_death_aoe_and_heal_pct": 0.50 } },
+  { "id": "overflowing_battery", "display_name": "Bateria Transbordante", "description": "Cada abate reduz 1s da recarga da Ultimate.", "effects": { "on_kill_ult_cd_reduction_s": 1.0 } }
+]
