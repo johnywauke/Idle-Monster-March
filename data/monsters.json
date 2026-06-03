@@ -1,65 +1,156 @@
 [
   {
+    "id": "ember_pup", "display_name": "Ember Pup", "element": "FOGO", "rarity": "COMUM", "role": "MELEE_DPS",
+    "base_hp": 700, "base_atk": 12, "base_def": 18, "growth_hp": 70, "growth_atk": 2.5, "growth_def": 2.0,
+    "aspd": 1.3, "range_px": 50, "crit_rate": 0.08, "crit_dmg": 1.5, "eva": 0.02,
+    "ultimate_name": "Mordida Inflamada", "ultimate_desc": "Causa dano de fogo ao alvo mais próximo."
+  },
+  {
+    "id": "cinder_imp", "display_name": "Cinder Imp", "element": "FOGO", "rarity": "INCOMUM", "role": "MELEE_DPS",
+    "base_hp": 550, "base_atk": 24, "base_def": 15, "growth_hp": 55, "growth_atk": 5.0, "growth_def": 2.0,
+    "aspd": 1.4, "range_px": 50, "crit_rate": 0.12, "crit_dmg": 1.5, "eva": 0.03,
+    "ultimate_name": "Brasa", "ultimate_desc": "[PLACEHOLDER] Pequena explosão de fogo."
+  },
+  {
     "id": "emberfox", "display_name": "Emberfox", "element": "FOGO", "rarity": "RARO", "role": "MELEE_ASSASSINO",
-    "base_hp": 600, "base_atk": 45, "base_def": 20,
-    "growth_hp": 60, "growth_atk": 9, "growth_def": 2,
+    "base_hp": 600, "base_atk": 45, "base_def": 20, "growth_hp": 60, "growth_atk": 9.0, "growth_def": 2.0,
     "aspd": 1.8, "range_px": 50, "crit_rate": 0.20, "crit_dmg": 1.6, "eva": 0.05,
-    "ultimate_name": "Corte Flamejante", "ultimate_desc": "Avanca e causa um critico garantido."
+    "ultimate_name": "Corte Flamejante", "ultimate_desc": "Avança e causa um crítico garantido."
   },
   {
     "id": "ignis_knight", "display_name": "Ignis Knight", "element": "FOGO", "rarity": "EPICO", "role": "MELEE_TANK",
-    "base_hp": 2000, "base_atk": 18, "base_def": 80,
-    "growth_hp": 220, "growth_atk": 3.5, "growth_def": 9,
+    "base_hp": 2000, "base_atk": 18, "base_def": 80, "growth_hp": 220, "growth_atk": 3.5, "growth_def": 9.0,
     "aspd": 0.8, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
     "ultimate_name": "Provocar", "ultimate_desc": "Atrai todos os ataques por 5s."
   },
   {
     "id": "flare_dragon", "display_name": "Flare Dragon", "element": "FOGO", "rarity": "LENDARIO", "role": "RANGED_NUKE",
-    "base_hp": 900, "base_atk": 70, "base_def": 25,
-    "growth_hp": 90, "growth_atk": 14, "growth_def": 3,
+    "base_hp": 900, "base_atk": 70, "base_def": 25, "growth_hp": 90, "growth_atk": 14.0, "growth_def": 3.0,
     "aspd": 1.0, "range_px": 200, "crit_rate": 0.10, "crit_dmg": 1.7, "eva": 0.05,
     "ultimate_name": "Chuva de Meteoros", "ultimate_desc": "Dano em toda a tela."
   },
-  {
-    "id": "cinder_imp", "display_name": "Cinder Imp", "element": "FOGO", "rarity": "INCOMUM", "role": "MELEE_DPS",
-    "base_hp": 550, "base_atk": 24, "base_def": 15,
-    "growth_hp": 55, "growth_atk": 5, "growth_def": 2,
-    "aspd": 1.4, "range_px": 50, "crit_rate": 0.12, "crit_dmg": 1.5, "eva": 0.03,
-    "ultimate_name": "Brasa", "ultimate_desc": "[PLACEHOLDER v2 8.1] Pequena explosao de fogo."
-  },
+
   {
     "id": "slurp", "display_name": "Slurp", "element": "AGUA", "rarity": "COMUM", "role": "MELEE_TANK",
-    "base_hp": 1200, "base_atk": 10, "base_def": 40,
-    "growth_hp": 130, "growth_atk": 2, "growth_def": 5,
+    "base_hp": 1200, "base_atk": 10, "base_def": 40, "growth_hp": 130, "growth_atk": 2.0, "growth_def": 5.0,
     "aspd": 0.9, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
     "ultimate_name": "Absorver", "ultimate_desc": "Cura a si mesmo."
   },
   {
+    "id": "driplet", "display_name": "Driplet", "element": "AGUA", "rarity": "INCOMUM", "role": "RANGED_SUPORTE",
+    "base_hp": 520, "base_atk": 16, "base_def": 12, "growth_hp": 52, "growth_atk": 3.5, "growth_def": 1.5,
+    "aspd": 1.2, "range_px": 200, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.04,
+    "ultimate_name": "Bolha Curativa", "ultimate_desc": "[PLACEHOLDER] Cura o aliado com menos HP."
+  },
+  {
+    "id": "coral_striker", "display_name": "Coral Striker", "element": "AGUA", "rarity": "RARO", "role": "RANGED_DPS",
+    "base_hp": 700, "base_atk": 35, "base_def": 22, "growth_hp": 70, "growth_atk": 7.0, "growth_def": 2.5,
+    "aspd": 1.5, "range_px": 200, "crit_rate": 0.12, "crit_dmg": 1.55, "eva": 0.06,
+    "ultimate_name": "Lança Coral", "ultimate_desc": "[PLACEHOLDER] Atira em todos os inimigos em linha."
+  },
+  {
     "id": "tidal_turtle", "display_name": "Tidal Turtle", "element": "AGUA", "rarity": "EPICO", "role": "MELEE_TANK",
-    "base_hp": 2600, "base_atk": 14, "base_def": 110,
-    "growth_hp": 280, "growth_atk": 3, "growth_def": 12,
+    "base_hp": 2600, "base_atk": 14, "base_def": 110, "growth_hp": 280, "growth_atk": 3.0, "growth_def": 12.0,
     "aspd": 0.7, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
     "ultimate_name": "Casco Refletor", "ultimate_desc": "Devolve 100% do dano por 3s."
   },
   {
+    "id": "leviathan", "display_name": "Leviathan", "element": "AGUA", "rarity": "LENDARIO", "role": "RANGED_NUKE",
+    "base_hp": 1800, "base_atk": 65, "base_def": 60, "growth_hp": 190, "growth_atk": 13.0, "growth_def": 7.0,
+    "aspd": 0.9, "range_px": 200, "crit_rate": 0.10, "crit_dmg": 1.65, "eva": 0.05,
+    "ultimate_name": "Maremoto", "ultimate_desc": "[PLACEHOLDER] Dano massivo em área + desaceleramento."
+  },
+
+  {
     "id": "pebble", "display_name": "Pebble", "element": "TERRA", "rarity": "COMUM", "role": "MELEE_TANK",
-    "base_hp": 1100, "base_atk": 9, "base_def": 45,
-    "growth_hp": 120, "growth_atk": 2, "growth_def": 6,
+    "base_hp": 1100, "base_atk": 9, "base_def": 45, "growth_hp": 120, "growth_atk": 2.0, "growth_def": 6.0,
     "aspd": 0.9, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
     "ultimate_name": "Rolar", "ultimate_desc": "Knockback em 1 inimigo."
   },
   {
+    "id": "cobble", "display_name": "Cobble", "element": "TERRA", "rarity": "INCOMUM", "role": "MELEE_TANK",
+    "base_hp": 580, "base_atk": 18, "base_def": 22, "growth_hp": 58, "growth_atk": 4.0, "growth_def": 3.0,
+    "aspd": 1.0, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
+    "ultimate_name": "Endurecimento", "ultimate_desc": "[PLACEHOLDER] Aumenta a própria DEF por 5s."
+  },
+  {
+    "id": "rockhorn", "display_name": "Rockhorn", "element": "TERRA", "rarity": "RARO", "role": "MELEE_DPS",
+    "base_hp": 750, "base_atk": 32, "base_def": 28, "growth_hp": 75, "growth_atk": 6.5, "growth_def": 3.5,
+    "aspd": 1.3, "range_px": 50, "crit_rate": 0.10, "crit_dmg": 1.55, "eva": 0.02,
+    "ultimate_name": "Chifrada", "ultimate_desc": "[PLACEHOLDER] Ataque poderoso com knockback."
+  },
+  {
+    "id": "boulder_beast", "display_name": "Boulder Beast", "element": "TERRA", "rarity": "EPICO", "role": "MELEE_TANK",
+    "base_hp": 2800, "base_atk": 20, "base_def": 130, "growth_hp": 295, "growth_atk": 4.0, "growth_def": 14.0,
+    "aspd": 0.7, "range_px": 50, "crit_rate": 0.05, "crit_dmg": 1.5, "eva": 0.0,
+    "ultimate_name": "Forma Rochosa", "ultimate_desc": "[PLACEHOLDER] Fica imune a dano por 4s."
+  },
+  {
     "id": "gaia_titan", "display_name": "Gaia Titan", "element": "TERRA", "rarity": "LENDARIO", "role": "MELEE_BRUISER",
-    "base_hp": 3200, "base_atk": 40, "base_def": 120,
-    "growth_hp": 330, "growth_atk": 7, "growth_def": 13,
+    "base_hp": 3200, "base_atk": 40, "base_def": 120, "growth_hp": 330, "growth_atk": 7.0, "growth_def": 13.0,
     "aspd": 0.9, "range_px": 50, "crit_rate": 0.08, "crit_dmg": 1.6, "eva": 0.0,
-    "ultimate_name": "Terremoto", "ultimate_desc": "[PLACEHOLDER v2 8.1] Dano em area + stun curto."
+    "ultimate_name": "Terremoto", "ultimate_desc": "[PLACEHOLDER] Dano em área + stun curto."
+  },
+
+  {
+    "id": "puff", "display_name": "Puff", "element": "VENTO", "rarity": "COMUM", "role": "RANGED_DPS",
+    "base_hp": 600, "base_atk": 11, "base_def": 10, "growth_hp": 60, "growth_atk": 2.2, "growth_def": 1.0,
+    "aspd": 1.5, "range_px": 200, "crit_rate": 0.07, "crit_dmg": 1.5, "eva": 0.05,
+    "ultimate_name": "Rajada", "ultimate_desc": "Sopra inimigos causando dano leve."
+  },
+  {
+    "id": "gust_bat", "display_name": "Gust Bat", "element": "VENTO", "rarity": "INCOMUM", "role": "RANGED_DPS",
+    "base_hp": 480, "base_atk": 22, "base_def": 10, "growth_hp": 48, "growth_atk": 4.5, "growth_def": 1.0,
+    "aspd": 2.0, "range_px": 200, "crit_rate": 0.10, "crit_dmg": 1.5, "eva": 0.08,
+    "ultimate_name": "Ecolocalizar", "ultimate_desc": "[PLACEHOLDER] Revela inimigos ocultos e causa dano."
+  },
+  {
+    "id": "cyclone_hawk", "display_name": "Cyclone Hawk", "element": "VENTO", "rarity": "RARO", "role": "RANGED_DPS",
+    "base_hp": 680, "base_atk": 36, "base_def": 15, "growth_hp": 68, "growth_atk": 7.5, "growth_def": 1.5,
+    "aspd": 2.2, "range_px": 200, "crit_rate": 0.15, "crit_dmg": 1.6, "eva": 0.10,
+    "ultimate_name": "Talho do Ciclone", "ultimate_desc": "[PLACEHOLDER] Série de ataques rápidos."
+  },
+  {
+    "id": "storm_wyvern", "display_name": "Storm Wyvern", "element": "VENTO", "rarity": "EPICO", "role": "RANGED_DPS",
+    "base_hp": 1200, "base_atk": 55, "base_def": 30, "growth_hp": 120, "growth_atk": 11.0, "growth_def": 3.0,
+    "aspd": 2.5, "range_px": 200, "crit_rate": 0.18, "crit_dmg": 1.65, "eva": 0.12,
+    "ultimate_name": "Tempestade", "ultimate_desc": "[PLACEHOLDER] Chuva de ventos cortantes em área."
+  },
+  {
+    "id": "tempest_lord", "display_name": "Tempest Lord", "element": "VENTO", "rarity": "LENDARIO", "role": "RANGED_DPS",
+    "base_hp": 1100, "base_atk": 75, "base_def": 35, "growth_hp": 110, "growth_atk": 15.0, "growth_def": 4.0,
+    "aspd": 3.0, "range_px": 200, "crit_rate": 0.20, "crit_dmg": 1.75, "eva": 0.15,
+    "ultimate_name": "Olho da Tormenta", "ultimate_desc": "[PLACEHOLDER] DPS massivo + buff de ASPD para o time."
+  },
+
+  {
+    "id": "sparkling", "display_name": "Sparkling", "element": "RAIO", "rarity": "COMUM", "role": "MELEE_DPS",
+    "base_hp": 650, "base_atk": 11, "base_def": 15, "growth_hp": 65, "growth_atk": 2.3, "growth_def": 1.8,
+    "aspd": 1.4, "range_px": 50, "crit_rate": 0.10, "crit_dmg": 1.5, "eva": 0.03,
+    "ultimate_name": "Descarga", "ultimate_desc": "Emite uma descarga elétrica no alvo."
+  },
+  {
+    "id": "joltling", "display_name": "Joltling", "element": "RAIO", "rarity": "INCOMUM", "role": "MELEE_DPS",
+    "base_hp": 560, "base_atk": 23, "base_def": 14, "growth_hp": 56, "growth_atk": 5.0, "growth_def": 1.8,
+    "aspd": 1.7, "range_px": 50, "crit_rate": 0.15, "crit_dmg": 1.55, "eva": 0.04,
+    "ultimate_name": "Paralisia Elétrica", "ultimate_desc": "[PLACEHOLDER] Chance de paralisar todos os inimigos."
   },
   {
     "id": "zappcat", "display_name": "Zappcat", "element": "RAIO", "rarity": "RARO", "role": "MELEE_DPS",
-    "base_hp": 650, "base_atk": 38, "base_def": 18,
-    "growth_hp": 65, "growth_atk": 8, "growth_def": 2,
+    "base_hp": 650, "base_atk": 38, "base_def": 18, "growth_hp": 65, "growth_atk": 8.0, "growth_def": 2.0,
     "aspd": 1.6, "range_px": 50, "crit_rate": 0.30, "crit_dmg": 1.8, "eva": 0.05,
-    "ultimate_name": "Estatica", "ultimate_desc": "Aumenta a propria chance critica em 50%."
+    "ultimate_name": "Estática", "ultimate_desc": "Aumenta a própria chance crítica em 50%."
+  },
+  {
+    "id": "volt_colossus", "display_name": "Volt Colossus", "element": "RAIO", "rarity": "EPICO", "role": "MELEE_BRUISER",
+    "base_hp": 2200, "base_atk": 35, "base_def": 80, "growth_hp": 230, "growth_atk": 7.0, "growth_def": 9.0,
+    "aspd": 1.0, "range_px": 50, "crit_rate": 0.20, "crit_dmg": 1.7, "eva": 0.05,
+    "ultimate_name": "Sobrecarga", "ultimate_desc": "[PLACEHOLDER] Descarga massiva que causa dano em cadeia."
+  },
+  {
+    "id": "thunder_sovereign", "display_name": "Thunder Sovereign", "element": "RAIO", "rarity": "LENDARIO", "role": "RANGED_DPS",
+    "base_hp": 1000, "base_atk": 80, "base_def": 30, "growth_hp": 100, "growth_atk": 16.0, "growth_def": 3.5,
+    "aspd": 2.0, "range_px": 200, "crit_rate": 0.25, "crit_dmg": 1.9, "eva": 0.08,
+    "ultimate_name": "Trovão Ancestral", "ultimate_desc": "[PLACEHOLDER] Raio crítico com chance de stun global."
   }
 ]
