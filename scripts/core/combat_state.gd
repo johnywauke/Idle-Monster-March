@@ -96,7 +96,14 @@ func to_dict() -> Dictionary:
 	}
 
 func from_dict(d: Dictionary) -> void:
-	phase_state = int(d.get("phase_state", PhaseState.COMBAT)) as PhaseState
+	# Restaura o estado de fase a partir do int salvo, de forma segura (sem cast de enum).
+	var ps := int(d.get("phase_state", 0))
+	if ps == 1:
+		phase_state = PhaseState.BOSS_FIGHT
+	elif ps == 2:
+		phase_state = PhaseState.FARM_MODE
+	else:
+		phase_state = PhaseState.COMBAT
 	boss_timer = float(d.get("boss_timer", 0.0))
 	boss_wipe_phase = int(d.get("boss_wipe_phase", 0))
 	fever_bar = float(d.get("fever_bar", 0.0))
