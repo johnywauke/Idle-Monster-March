@@ -180,6 +180,7 @@ func _inst_to_dict(m: MonsterInstance) -> Dictionary:
 		"level": m.level,
 		"stars": m.stars,
 		"xp": m.xp,
+		"ult_energy": m.ult_energy,
 		"talent": m.talent.id if m.talent != null else "",
 	}
 
@@ -219,7 +220,8 @@ func _dict_to_inst(entry: Dictionary) -> MonsterInstance:
 	if md == null:
 		return null
 	var inst := MonsterInstance.new(md, int(entry.get("level", 1)), int(entry.get("stars", 1)))
-	inst.xp = float(entry.get("xp", 0.0))
+	inst.xp         = float(entry.get("xp", 0.0))
+	inst.ult_energy = clampf(float(entry.get("ult_energy", 0.0)), 0.0, 1.0)
 	var tid: String = entry.get("talent", "")
 	if tid != "":
 		inst.talent = ContentDB.talents.get(tid, null)

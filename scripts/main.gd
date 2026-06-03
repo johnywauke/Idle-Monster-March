@@ -1,130 +1,175 @@
-extends Node
-# Cena de bootstrap/demo. Prova que todos os sistemas do núcleo estão vivos.
-# Aqui no futuro entra a cena de gameplay real.
+extends Control
+# Gerenciador de telas: TopHUD + 3 abas (Batalha / Time / Gacha) + auto-save.
+# Substitui o antigo bootstrap de texto.
+
+const AUTOSAVE_INTERVAL := 30.0   # segundos entre auto-saves
+
+var _hud: TopHUD
+var _battle: BattleScreen
+var _team: TeamScreen
+var _gacha: GachaScreen
+var _content: Control             # container das telas (excluindo HUD e tabs)
+var _tab_buttons: Array           # Button por aba
+var _current_screen: Control      = null
+var _autosave_timer: float        = 0.0
 
 func _ready() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	# Semente o estado de demo se o save estiver vazio
 	var offline_gold := SaveManager.load_game()
 	if GameState.team.is_empty():
 		_seed_demo_state()
+	if offline_gold > 0.0:
+		print("[Main] Ouro offline creditado: %s" % Numbers.format(offline_gold))
 
-	var lines := _build_report(offline_gold)
-	for l in lines:
-		print(l)
-	_show_on_screen("\n".join(lines))
+	_build_layout()
+	_show_screen(_battle)
 
-# --- Estado de demonstração ---
+# ---------------------------------------------------------------------------
+# Layout raiz
+# ---------------------------------------------------------------------------
+
+func _build_layout() -> void:
+	var root := VBoxContainer.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.add_theme_constant_override("separation", 0)
+	add_child(root)
+
+	# HUD topo
+	_hud = TopHUD.new()
+	root.add_child(_hud)
+
+	# Área de conteúdo (expande)
+	_content = Control.new()
+	_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_content.clip_contents = true
+	root.add_child(_content)
+
+	# Cria as telas (invisíveis até serem selecionadas)
+	_battle = BattleScreen.new()
+	_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_battle.visible = false
+	_battle.hud_needs_refresh.connect(func(): _hud.refresh())
+	_content.add_child(_battle)
+
+	_team = TeamScreen.new()
+	_team.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_team.visible = false
+	_team.team_changed.connect(_on_team_changed)
+	_content.add_child(_team)
+
+	_gacha = GachaScreen.new()
+	_gacha.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_gacha.visible = false
+	_gacha.inventory_changed.connect(_on_inventory_changed)
+	_content.add_child(_gacha)
+
+	# Barra de abas inferior
+	_build_tab_bar(root)
+
+func _build_tab_bar(parent: VBoxContainer) -> void:
+	var sep := HSeparator.new()
+	sep.add_theme_color_override("color", ThemeHelper.BG_PANEL)
+	parent.add_child(sep)
+
+	var bar := HBoxContainer.new()
+	bar.custom_minimum_size = Vector2(0, 68)
+	bar.add_theme_constant_override("separation", 0)
+	bar.add_theme_stylebox_override("panel", ThemeHelper.flat(ThemeHelper.BG_ROOT))
+	parent.add_child(bar)
+
+	_tab_buttons = []
+	var tab_data := [
+		{"label": "Batalha", "screen_idx": 0, "color": Color(0.20, 0.55, 0.90)},
+		{"label": "Time",    "screen_idx": 1, "color": Color(0.25, 0.70, 0.30)},
+		{"label": "Gacha",   "screen_idx": 2, "color": Color(0.70, 0.45, 0.10)},
+	]
+
+	for td in tab_data:
+		var btn := Button.new()
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.text = td["label"]
+		btn.add_theme_font_size_override("font_size", 16)
+		_style_tab(btn, td["color"], false)
+		var idx: int = td["screen_idx"]
+		btn.pressed.connect(func(): _on_tab_pressed(idx))
+		bar.add_child(btn)
+		_tab_buttons.append({"btn": btn, "color": td["color"]})
+
+# ---------------------------------------------------------------------------
+# Navegação entre abas
+# ---------------------------------------------------------------------------
+
+func _on_tab_pressed(idx: int) -> void:
+	var screens := [_battle, _team, _gacha]
+	_show_screen(screens[idx])
+	_refresh_tab_styles(idx)
+
+func _show_screen(screen: Control) -> void:
+	if _current_screen != null:
+		_current_screen.visible = false
+	_current_screen = screen
+	screen.visible = true
+	_hud.refresh()
+
+func _refresh_tab_styles(active_idx: int) -> void:
+	for i in _tab_buttons.size():
+		var td: Dictionary = _tab_buttons[i]
+		_style_tab(td["btn"], td["color"], i == active_idx)
+
+func _style_tab(btn: Button, color: Color, active: bool) -> void:
+	var bg := color.darkened(0.5 if not active else 0.15)
+	var border_w := 3 if active else 0
+	btn.add_theme_stylebox_override("normal",  ThemeHelper.flat(bg, color, border_w, 0))
+	btn.add_theme_stylebox_override("hover",   ThemeHelper.flat(bg.lightened(0.08), color, border_w, 0))
+	btn.add_theme_stylebox_override("pressed", ThemeHelper.flat(bg.darkened(0.08), color, border_w, 0))
+	btn.add_theme_stylebox_override("focus",   ThemeHelper.flat(bg, color, border_w, 0))
+	btn.add_theme_color_override("font_color", ThemeHelper.TEXT_MAIN if active else ThemeHelper.TEXT_DIM)
+
+# ---------------------------------------------------------------------------
+# Reatividade entre telas
+# ---------------------------------------------------------------------------
+
+func _on_team_changed() -> void:
+	# Notifica a tela de batalha para reconstruir os cards de monstros
+	if is_instance_valid(_battle):
+		_battle.notify_team_changed()
+	_hud.refresh()
+
+func _on_inventory_changed() -> void:
+	if is_instance_valid(_team):
+		_team.refresh()
+	_hud.refresh()
+
+# ---------------------------------------------------------------------------
+# Loop principal: auto-save + HUD
+# ---------------------------------------------------------------------------
+
+func _process(delta: float) -> void:
+	_autosave_timer += delta
+	if _autosave_timer >= AUTOSAVE_INTERVAL:
+		_autosave_timer = 0.0
+		SaveManager.save_game()
+
+# ---------------------------------------------------------------------------
+# Estado de demo (usado só quando não há save)
+# ---------------------------------------------------------------------------
 
 func _seed_demo_state() -> void:
-	GameState.current_phase = 10
-	GameState.max_phase = 10
-	GameState.gold = 0.0
+	GameState.current_phase = 1
+	GameState.max_phase     = 1
+	GameState.gold          = 5000.0
+	GameState.gems          = 300
 
-	# Time demo: 4 FOGO + 1 AGUA + 1 TERRA + 1 RAIO -> sinergia FOGO(4) ativa
-	var demo_ids := ["emberfox", "ignis_knight", "flare_dragon", "cinder_imp", "slurp", "pebble", "zappcat"]
-	for id in demo_ids:
+	var starter_ids := ["emberfox", "ignis_knight", "slurp", "pebble", "zappcat"]
+	for id in starter_ids:
 		var md := ContentDB.get_monster(id)
 		if md != null:
-			GameState.add_to_team(MonsterInstance.new(md, 25, 2))
+			GameState.add_to_team(MonsterInstance.new(md, 15, 1))
 
-	# Demo gacha: tutorial 10x + coloca no inventário
-	GameState.tutorial_done = true
-	var pulled := GachaSystem.tutorial_pull(GameState.rng)
-	for md in pulled:
-		GameState.grant_monster(md)
-
-	# Talento demo no Emberfox: Canhão de Vidro (+50% ATK, -30% HP)
-	var talent_glass := ContentDB.talents.get("glass_cannon", null)
-	if talent_glass != null and GameState.team.size() > 0:
-		GameState.team[0].talent = talent_glass
-
-# --- Relatório ---
-
-func _build_report(offline_gold: float) -> Array:
-	var lines: Array = []
-	lines.append("=== Idle Monster March — Núcleo v2 ===")
-	lines.append("")
-
-	# Equipe
-	lines.append("[ EQUIPE %d/%d ]" % [GameState.team.size(), GameState.TEAM_SIZE])
-	for i in GameState.team.size():
-		var m := GameState.team[i]
-		if m == null or m.data == null:
-			continue
-		var talent_tag := (" +%s" % m.talent.display_name) if m.talent != null else ""
-		lines.append("  [%d] %s [%s/%s] Nv.%d ★%d | DPS %s | ATK %s | HP %s | Tier %d%s" % [
-			i + 1, m.data.display_name, m.data.element, m.data.rarity,
-			m.level, m.stars,
-			Numbers.format(m.expected_dps()),
-			Numbers.format(m.final_atk()),
-			Numbers.format(m.final_hp()),
-			m.tier(), talent_tag])
-	lines.append("")
-
-	# Sinergias
-	lines.append("[ SINERGIAS ]")
-	lines.append("  " + SynergySystem.synergy_report(GameState.team))
-	lines.append("")
-
-	# Combate
-	var dps := GameState.team_base_dps()
-	var phase := GameState.current_phase
-	lines.append("[ COMBATE — Fase %d ]" % phase)
-	lines.append("  DPS base da equipe: %s" % Numbers.format(dps))
-	lines.append("  Dano de clique (10%%): %s" % Numbers.format(GameState.click_damage()))
-	lines.append("  HP inimigo comum: %s" % Numbers.format(Formulas.enemy_hp(phase)))
-	lines.append("  HP do boss: %s" % Numbers.format(Formulas.boss_hp(phase)))
-	var ttk_boss := BattleSimulator.time_to_kill_boss(dps, phase)
-	var beats_passively := BattleSimulator.can_beat_boss(dps, phase)
-	lines.append("  Tempo para matar o boss: %.1fs → Vence antes do Enrage? %s" % [
-		ttk_boss, "SIM (passivo)" if beats_passively else "NÃO (precisa upar)"])
-	lines.append("  Ouro/segundo: %s" % Numbers.format(BattleSimulator.gold_per_second(dps, phase)))
-	lines.append("  DEF mitigation (Pebble, fase %d): %.1f%%" % [
-		phase, Formulas.def_mitigation(GameState.team[5].final_def() if GameState.team.size() > 5 else 0.0, phase) * 100.0])
-	lines.append("")
-
-	# Fever Mode
-	lines.append("[ FEVER MODE ]")
-	lines.append("  Barra: %.0f%% | Ativo: %s | Cooldown: %.0fs" % [
-		GameState.combat.fever_bar * 100.0,
-		"SIM" if GameState.combat.fever_active else "NÃO",
-		GameState.combat.fever_cooldown])
-	lines.append("")
-
-	# Inventário e gacha
-	lines.append("[ INVENTÁRIO ]")
-	lines.append("  %d monstros no inventário." % GameState.inventory.size())
-	if not GameState.inventory.is_empty():
-		for m in GameState.inventory.slice(0, mini(3, GameState.inventory.size())):
-			lines.append("    - %s [%s/%s]" % [m.data.display_name, m.data.element, m.data.rarity])
-		if GameState.inventory.size() > 3:
-			lines.append("    ... (+%d)" % (GameState.inventory.size() - 3))
-	lines.append("  Fragmentos: %d IDs com fragmentos." % GameState.fragments.size())
-	lines.append("  Pity counter: %d/%d" % [GameState.pity_counter, GachaSystem.PITY_LIMIT])
-	lines.append("")
-
-	# Prestígio
-	lines.append("[ PRESTÍGIO ]")
-	lines.append("  Desbloqueio na fase %d. Fase máx atual: %d." % [
-		Formulas.PRESTIGE_UNLOCK_PHASE, GameState.max_phase])
-	lines.append("  Soul Coins ganhos se prestigiar agora: %d" % Formulas.soul_coins(GameState.max_phase))
-	lines.append("  Soul Coins acumulados: %d" % GameState.soul_coins)
-	lines.append("")
-
-	# Offline
-	if offline_gold > 0.0:
-		lines.append("[ OFFLINE ]")
-		lines.append("  Ouro creditado: %s" % Numbers.format(offline_gold))
-		lines.append("")
-
-	lines.append("Total de monstros no ContentDB: %d" % ContentDB.monsters.size())
-	return lines
-
-func _show_on_screen(text: String) -> void:
-	var scroll := ScrollContainer.new()
-	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var label := Label.new()
-	label.text = text
-	label.add_theme_font_size_override("font_size", 13)
-	label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	scroll.add_child(label)
-	add_child(scroll)
+	# Alguns monstros no inventário para demonstrar o gacha
+	for id in ["flare_dragon", "tidal_turtle", "gaia_titan"]:
+		var md := ContentDB.get_monster(id)
+		if md != null:
+			GameState.inventory.append(MonsterInstance.new(md, 1, 1))
