@@ -9,7 +9,6 @@ var _enemy_hp: float       = 0.0
 var _enemy_max_hp: float   = 1.0
 var _enemy_type: EnemyData = null
 var _kills_this_phase: int = 0
-var _pending_rebuild: bool = false  # agrupa rebuilds de level-up
 
 const KILLS_PER_PHASE := 10
 
@@ -71,9 +70,6 @@ func _process(delta: float) -> void:
 	# Processa ULT de cada monstro
 	_process_ultimates(delta)
 
-	# Level-up acumulado
-	_process_level_ups()
-
 	# Transição suave de bioma
 	var target_bg := ThemeHelper.biome_color(GameState.current_phase)
 	_bg_rect.color = _bg_rect.color.lerp(target_bg, delta * 1.5)
@@ -118,24 +114,6 @@ func _fire_ultimate_slot(slot_idx: int) -> void:
 	_spawn_number(ep, "-%s" % Numbers.format(dmg), ThemeHelper.FEVER_CLR.lightened(0.2))
 	_spawn_number(ep + Vector2(0, -40), ult_name, ThemeHelper.FEVER_CLR)
 
-# --- Level-up ---
-
-func _process_level_ups() -> void:
-	for i in GameState.team.size():
-		var m := GameState.team[i]
-		if m == null:
-			continue
-		while m.xp >= m.xp_to_next_level():
-			m.xp -= m.xp_to_next_level()
-			m.level += 1
-			_pending_rebuild = true
-			var pos := _card_center_pos(i)
-			_spawn_number(pos, "LV.%d!" % m.level, ThemeHelper.GOLD_COLOR)
-	if _pending_rebuild:
-		GameState._recalc_synergies()
-		_pending_rebuild = false
-		_rebuild_monster_cards()
-
 # ---------------------------------------------------------------------------
 # Input
 # ---------------------------------------------------------------------------
@@ -146,7 +124,8 @@ func _on_enemy_clicked() -> void:
 	var dmg := GameState.click_damage()
 	_enemy_hp = maxf(_enemy_hp - dmg, 0.0)
 	GameState.combat.add_fever_click()
-	_spawn_number(_enemy_panel_center(), "-%s" % Numbers.format(dmg), ThemeHelper.HP_RED)
+	_spawn_number(_enemy_panel_center(), "-%s" % Numbers.format(dmg), ThemeHelper.HP_LOW)
+	_flash_enemy()
 
 func _on_monster_clicked(slot_idx: int) -> void:
 	if slot_idx >= GameState.team.size():
@@ -156,14 +135,22 @@ func _on_monster_clicked(slot_idx: int) -> void:
 		return
 	var pos := _card_center_pos(slot_idx)
 	if m.is_ult_ready():
-		# Disparo manual (v2 §1)
+		# Disparo manual da ultimate (v2 §1)
 		_fire_ultimate_slot(slot_idx)
 	else:
-		# +1% XP + 5% ULT energy (v2 §5)
-		m.xp += m.xp_to_next_level() * 0.01
+		# Clique no aliado carrega +5% da barra de Ultimate (v2 §5)
 		if m.add_ult_energy(0.05):
 			_on_ult_ready(slot_idx)
-		_spawn_number(pos, "+XP", ThemeHelper.HP_FULL)
+		var el := m.data.element if m.data != null else "FOGO"
+		_spawn_number(pos, "+ULT", ThemeHelper.element_color(el))
+
+# Flash branco rápido no inimigo ao receber clique (game feel).
+func _flash_enemy() -> void:
+	if _enemy_type_icon == null:
+		return
+	_enemy_type_icon.modulate = Color(2.0, 2.0, 2.0)
+	var tw := create_tween()
+	tw.tween_property(_enemy_type_icon, "modulate", Color.WHITE, 0.15)
 
 # ---------------------------------------------------------------------------
 # Lógica de inimigos e fases
@@ -207,10 +194,6 @@ func _on_enemy_killed() -> void:
 	var gold    := BattleSimulator.gold_per_kill(phase)
 	GameState.gold += gold
 	_spawn_number(_enemy_panel_center(), "+%s G" % Numbers.format(gold), ThemeHelper.GOLD_COLOR)
-	# XP para todo o time
-	for m in GameState.team:
-		if m != null:
-			m.xp += 10.0 * float(phase)
 
 	if is_boss:
 		_advance_phase()

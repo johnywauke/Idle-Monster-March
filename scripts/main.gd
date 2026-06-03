@@ -20,11 +20,13 @@ func _ready() -> void:
 	var offline_gold := SaveManager.load_game()
 	if GameState.team.is_empty():
 		_seed_demo_state()
-	if offline_gold > 0.0:
-		print("[Main] Ouro offline creditado: %s" % Numbers.format(offline_gold))
 
 	_build_layout()
 	_show_screen(_battle)
+
+	# Gancho de retenção: popup de boas-vindas mostrando o ganho offline (v2 §1)
+	if offline_gold > 0.0:
+		_show_offline_popup(offline_gold)
 
 # ---------------------------------------------------------------------------
 # Layout raiz
@@ -141,6 +143,60 @@ func _on_inventory_changed() -> void:
 	if is_instance_valid(_team):
 		_team.refresh()
 	_hud.refresh()
+
+# ---------------------------------------------------------------------------
+# Popup de boas-vindas (ganho offline) — gancho de retenção
+# ---------------------------------------------------------------------------
+
+func _show_offline_popup(amount: float) -> void:
+	var overlay := Control.new()
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var dark := ColorRect.new()
+	dark.color = Color(0, 0, 0, 0.78)
+	dark.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(dark)
+
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(520, 320)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	panel.add_theme_stylebox_override("panel",
+		ThemeHelper.flat(ThemeHelper.BG_PANEL, ThemeHelper.GOLD_COLOR, 2, 14))
+	overlay.add_child(panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	panel.add_child(margin)
+
+	var col := VBoxContainer.new()
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_theme_constant_override("separation", 14)
+	margin.add_child(col)
+
+	col.add_child(_centered_label("Bem-vindo de volta!", ThemeHelper.TEXT_MAIN, 24))
+	col.add_child(_centered_label("Seus monstros marcharam enquanto você esteve fora:",
+		ThemeHelper.TEXT_DIM, 13))
+	col.add_child(_centered_label("+%s Ouro" % Numbers.format(amount), ThemeHelper.GOLD_COLOR, 34))
+
+	var collect := ThemeHelper.button("Coletar", Color(0.25, 0.50, 0.25), 18)
+	collect.custom_minimum_size = Vector2(0, 56)
+	collect.pressed.connect(func():
+		overlay.queue_free()
+		_hud.refresh()
+	)
+	col.add_child(collect)
+
+	add_child(overlay)
+
+func _centered_label(text: String, color: Color, size: int) -> Label:
+	var l := ThemeHelper.label(text, color, size)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	return l
 
 # ---------------------------------------------------------------------------
 # Loop principal: auto-save + HUD

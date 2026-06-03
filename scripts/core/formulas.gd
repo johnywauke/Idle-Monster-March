@@ -19,6 +19,13 @@ const ENRAGE_SECONDS := 30.0                     # v2 7
 const DEF_K_BASE := 1000.0                       # v2 3
 const CLICK_DMG_FRACTION := 0.10                 # v2 5
 
+# Custo de nivel pago em OURO (dreno ativo do loop idle; v2 4: prestigio reseta ouro+nivel).
+const LEVEL_COST_BASE := 50.0                    # ouro p/ sair do nivel 1
+const LEVEL_COST_GROWTH := 1.07                  # exponencial (padrao do genero)
+const RARITY_LEVEL_MULT := {                     # monstros melhores custam mais p/ upar
+	"COMUM": 1.0, "INCOMUM": 1.25, "RARO": 1.6, "EPICO": 2.2, "LENDARIO": 3.0
+}
+
 # --- Curvas de progressao ---
 static func xp_for_level(level: int) -> float:
 	return 100.0 * pow(float(level), 1.5)
@@ -42,6 +49,13 @@ static func soul_coins(max_phase: int, base: float = SOUL_COIN_BASE) -> int:
 	if max_phase < PRESTIGE_UNLOCK_PHASE:
 		return 0
 	return int(floor(base * pow(1.08, float(max_phase - PRESTIGE_UNLOCK_PHASE))))
+
+# Custo em OURO para subir do 'level' atual para o proximo.
+static func rarity_level_mult(rarity: String) -> float:
+	return float(RARITY_LEVEL_MULT.get(rarity, 1.0))
+
+static func level_up_cost(level: int, rarity_mult: float = 1.0) -> float:
+	return LEVEL_COST_BASE * rarity_mult * pow(LEVEL_COST_GROWTH, float(max(level - 1, 0)))
 
 # --- Tier e Estrela ---
 static func tier_from_level(level: int) -> int:

@@ -129,6 +129,38 @@ func _owns(id: String) -> bool:
 			return true
 	return false
 
+# --- Upgrade de nível com OURO (dreno ativo do loop idle; v2 §4) ---
+
+func level_up_cost(inst: MonsterInstance) -> float:
+	if inst == null or inst.data == null:
+		return INF
+	return Formulas.level_up_cost(inst.level, Formulas.rarity_level_mult(inst.data.rarity))
+
+func can_level_up(inst: MonsterInstance) -> bool:
+	return inst != null and gold >= level_up_cost(inst)
+
+# Sobe 1 nível gastando ouro. Retorna true se conseguiu.
+func try_level_up(inst: MonsterInstance) -> bool:
+	if not can_level_up(inst):
+		return false
+	gold -= level_up_cost(inst)
+	inst.level += 1
+	_recalc_synergies()
+	return true
+
+# Sobe o máximo de níveis que o ouro permitir. Retorna quantos níveis subiu.
+func level_up_max(inst: MonsterInstance, max_steps: int = 5000) -> int:
+	if inst == null or inst.data == null:
+		return 0
+	var n := 0
+	while n < max_steps and gold >= level_up_cost(inst):
+		gold -= level_up_cost(inst)
+		inst.level += 1
+		n += 1
+	if n > 0:
+		_recalc_synergies()
+	return n
+
 # --- Prestígio (v2 §4) ---
 
 # Executa o prestígio. Só chame quando max_phase >= PRESTIGE_UNLOCK_PHASE.
