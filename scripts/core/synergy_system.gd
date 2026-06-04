@@ -75,8 +75,11 @@ static func _adjacency_atk(idx: int, team: Array) -> float:
 		return 0.0
 	var el: String = m.data.element
 	var pct := 0.0
+	
 	for offset in [-1, 1]:
-		var ni := idx + offset
+		# FIXED: Explicitly typed as 'int' instead of using ':='
+		var ni: int = idx + offset 
+		
 		if ni >= 0 and ni < team.size():
 			var nb = team[ni]
 			if nb != null and nb.data != null and nb.data.element == el:
