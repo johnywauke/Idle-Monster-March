@@ -227,11 +227,14 @@ func _make_result_row(md: MonsterData, is_new: bool) -> Control:
 	row.add_theme_constant_override("separation", 8)
 	panel.add_child(row)
 
-	# Ícone de elemento
+	# Ícone de elemento + emoji do monstro
 	var icon := ColorRect.new()
 	icon.color = e_color
-	icon.custom_minimum_size = Vector2(36, 36)
+	icon.custom_minimum_size = Vector2(40, 40)
 	row.add_child(icon)
+	var face := EmojiDB.make_label(EmojiDB.for_monster(md.id, md.element), 28)
+	face.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	icon.add_child(face)
 
 	# Nome e raridade
 	var info := VBoxContainer.new()

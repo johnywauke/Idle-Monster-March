@@ -84,6 +84,9 @@ func _rebuild() -> void:
 	icon.color = el_color
 	icon.custom_minimum_size = Vector2(54, 54)
 	head.add_child(icon)
+	var face := EmojiDB.make_label(EmojiDB.for_monster(m.data.id, m.data.element), 38)
+	face.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	icon.add_child(face)
 
 	var head_col := VBoxContainer.new()
 	head_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL

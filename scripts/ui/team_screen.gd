@@ -125,6 +125,10 @@ func _make_slot_card(slot_idx: int) -> Button:
 		el_strip.custom_minimum_size = Vector2(0, 5)
 		inner.add_child(el_strip)
 
+		var face := EmojiDB.make_label(EmojiDB.for_monster(m.data.id, m.data.element), 34)
+		face.custom_minimum_size = Vector2(0, 38)
+		inner.add_child(face)
+
 		var nm := ThemeHelper.label(m.data.display_name, ThemeHelper.TEXT_MAIN, 12)
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		nm.clip_text = true
@@ -163,6 +167,11 @@ func _make_inv_card(inv_idx: int) -> Button:
 	el_strip.color = el_color.darkened(0.25)
 	el_strip.custom_minimum_size = Vector2(0, 4)
 	inner.add_child(el_strip)
+
+	if m.data != null:
+		var face := EmojiDB.make_label(EmojiDB.for_monster(m.data.id, m.data.element), 32)
+		face.custom_minimum_size = Vector2(0, 34)
+		inner.add_child(face)
 
 	var nm := ThemeHelper.label(m.data.display_name if m.data != null else "?", ThemeHelper.TEXT_MAIN, 11)
 	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
